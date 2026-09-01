@@ -41,6 +41,7 @@ gps-msgs==2.1.2
 h11==0.16.0
 idna==3.19
 image-geometry==4.1.0
+iniconfig==2.3.0
 interactive-markers==2.5.5
 joblib==1.6.0
 laser-geometry==2.7.2
@@ -59,11 +60,15 @@ narwhals==2.25.0
 nav-msgs==5.3.7
 numpy==2.5.2
 osrf-pycommon==2.1.7
+packaging==26.3
 pandas==3.0.5
 pcl-msgs==1.0.0
 pendulum-msgs==0.33.10
+pluggy==1.6.0
 pydantic==2.13.5
 pydantic_core==2.46.5
+Pygments==2.21.0
+pytest==9.1.1
 python-dateutil==2.9.0.post0
 python-qt-binding==2.2.2
 qt-dotgraph==2.7.6

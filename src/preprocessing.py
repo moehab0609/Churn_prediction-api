@@ -40,18 +40,25 @@ def encode_binary_columns(df: pd.DataFrame, include_target: bool = True) -> pd.D
     return df
 
 
-def encode_categorical_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """One-hot encode multi-category columns."""
+def encode_categorical_single(df: pd.DataFrame, feature_columns: list) -> pd.DataFrame:
+    """One-hot encode a single record by matching against known training feature columns directly,
+    avoiding pd.get_dummies' single-row category-detection problem."""
     df = df.copy()
-    
+
     multi_cat_cols = [
         'MultipleLines', 'InternetService', 'OnlineSecurity', 'OnlineBackup',
         'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies',
         'Contract', 'PaymentMethod'
     ]
-    
-    df = pd.get_dummies(df, columns=multi_cat_cols, drop_first=True)
-    
+
+    for col in multi_cat_cols:
+        value = df[col].iloc[0]
+        dummy_col_name = f"{col}_{value}"
+        df[col] = 0  # placeholder to avoid leaving raw string column behind
+        if dummy_col_name in feature_columns:
+            df[dummy_col_name] = 1
+        df = df.drop(columns=[col])
+
     return df
 
 def finalize_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -71,6 +78,6 @@ def preprocess_single_record(record: dict, feature_columns: list) -> pd.DataFram
     df = pd.DataFrame([record])
     df = clean_total_charges(df)
     df = encode_binary_columns(df, include_target=False)
-    df = encode_categorical_columns(df)
+    df = encode_categorical_single(df, feature_columns)
     df = df.reindex(columns=feature_columns, fill_value=0)
     return df
