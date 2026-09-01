@@ -2,6 +2,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+import joblib
+from pathlib import Path
 
 def train_random_forest(X_train: pd.DataFrame, y_train: pd.Series) -> RandomForestClassifier:
     """Train a Random Forest baseline with class weighting to address imbalance."""
@@ -33,3 +35,13 @@ def train_baseline_model(X_train: pd.DataFrame, y_train: pd.Series) -> LogisticR
     model = LogisticRegression(max_iter=1000, random_state=42,class_weight='balanced')
     model.fit(X_train, y_train)
     return model
+
+def save_model(model, filepath: str) -> None:
+    """Save a trained model to disk."""
+    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(model, filepath)
+
+
+def load_model(filepath: str):
+    """Load a trained model from disk."""
+    return joblib.load(filepath)
