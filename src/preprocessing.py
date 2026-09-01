@@ -23,12 +23,14 @@ def preprocess(filepath: str) -> pd.DataFrame:
     df = finalize_features(df)
     return df
 
-def encode_binary_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """Label-encode binary Yes/No columns and gender."""
+def encode_binary_columns(df: pd.DataFrame, include_target: bool = True) -> pd.DataFrame:
+    """Label-encode binary Yes/No columns and gender. Set include_target=False at inference time, when no label column exists."""
     df = df.copy()
     
     binary_map = {'Yes': 1, 'No': 0}
-    binary_cols = ['Partner', 'Dependents', 'PhoneService', 'PaperlessBilling', 'Churn']
+    binary_cols = ['Partner', 'Dependents', 'PhoneService', 'PaperlessBilling']
+    if include_target:
+        binary_cols = binary_cols + ['Churn']
     
     for col in binary_cols:
         df[col] = df[col].map(binary_map)
@@ -60,4 +62,15 @@ def finalize_features(df: pd.DataFrame) -> pd.DataFrame:
     bool_cols = df.select_dtypes(include='bool').columns
     df[bool_cols] = df[bool_cols].astype(int)
     
+    return df
+
+
+
+def preprocess_single_record(record: dict, feature_columns: list) -> pd.DataFrame:
+    """Preprocess a single raw customer record into model-ready features, aligned to training columns."""
+    df = pd.DataFrame([record])
+    df = clean_total_charges(df)
+    df = encode_binary_columns(df, include_target=False)
+    df = encode_categorical_columns(df)
+    df = df.reindex(columns=feature_columns, fill_value=0)
     return df

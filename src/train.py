@@ -2,6 +2,7 @@ from preprocessing import preprocess
 from train_test_split import get_train_test_split
 from train_model import train_random_forest, save_model
 from evaluate import evaluate_model
+from train_model import train_random_forest, save_model, save_feature_columns
 
 
 def main():
@@ -20,6 +21,10 @@ def main():
     print("\nSaving model...")
     save_model(model, 'models/churn_rf_model.pkl')
     print("Model saved to models/churn_rf_model.pkl")
+    
+    print("Saving feature columns...")
+    save_feature_columns(X_train.columns, 'models/feature_columns.pkl')
+    print("Model and feature columns saved.")
 
 
 if __name__ == "__main__":

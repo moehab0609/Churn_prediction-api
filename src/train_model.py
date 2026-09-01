@@ -45,3 +45,14 @@ def save_model(model, filepath: str) -> None:
 def load_model(filepath: str):
     """Load a trained model from disk."""
     return joblib.load(filepath)
+
+
+def save_feature_columns(columns, filepath: str) -> None:
+    """Save the exact training feature column order for later alignment."""
+    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(list(columns), filepath)
+
+
+def load_feature_columns(filepath: str) -> list:
+    """Load the saved training feature column order."""
+    return joblib.load(filepath)
