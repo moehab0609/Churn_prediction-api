@@ -1,6 +1,18 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
+def train_random_forest(X_train: pd.DataFrame, y_train: pd.Series) -> RandomForestClassifier:
+    """Train a Random Forest baseline with class weighting to address imbalance."""
+    model = RandomForestClassifier(
+        n_estimators=200,
+        max_depth=10,
+        random_state=42,
+        class_weight='balanced'
+    )
+    model.fit(X_train, y_train)
+    return model
 
 
 def scale_features(X_train: pd.DataFrame, X_test: pd.DataFrame):
